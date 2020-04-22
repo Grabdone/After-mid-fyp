@@ -15,7 +15,7 @@ bankdata2 = pd.read_csv("trainingCommonVoicePreProcessedWithAgeGroupsRemovingOth
 count_gender =pd.value_counts(bankdata2['gender'])
 total_gender =sum(count_gender)
 
-count_age =pd.value_counts(bankdata2['age'])
+count_age =pd.value_counts(bankdata2['age_group'])
 total_age = sum(count_age)
 
 count_acc =pd.value_counts(bankdata2['accent'])
