@@ -35,6 +35,12 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
+# Applying LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+lda = LDA(n_components = 2)
+X_train = lda.fit_transform(X_train, y_train[:,0])
+X_test = lda.transform(X_test)
+
 # Fitting K-NN to the Training set
 from sklearn.neighbors import KNeighborsClassifier
 classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
@@ -53,3 +59,16 @@ from sklearn.metrics import accuracy_score, classification_report
 print(cm)
 print(classification_report(y_test[:,0],y_pred))
 print("accuracy:",accuracy_score(y_test[:,0],y_pred,normalize=True))
+
+# Visualising the Training set results
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_train,  y_train[:,0]
+
+plt.xlim(X_set.min(), X_set.max())
+plt.ylim(y_set.min(), y_set.max())
+plt.scatter(X_set, y_set)
+plt.title('LDA (Training set)')
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.legend()
+plt.show()

@@ -35,21 +35,46 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-# Fitting K-NN to the Training set
-from sklearn.neighbors import KNeighborsClassifier
-classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+
+# Fitting Kernel SVM to the Training set
+from sklearn.svm import SVC
+classifier = SVC(kernel = 'rbf', random_state = 0)
 classifier.fit(X_train, y_train[:,0])
+
+# # Fitting K-NN to the Training set
+# from sklearn.neighbors import KNeighborsClassifier
+# classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+# classifier.fit(X_train, y_train[:,0])
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
 
-    
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test[:,0], y_pred)
 
+
 from sklearn.metrics import accuracy_score, classification_report
 print(cm)
 print(classification_report(y_test[:,0],y_pred))
 print("accuracy:",accuracy_score(y_test[:,0],y_pred,normalize=True))
+
+# Applying k-Fold Cross Validation
+from sklearn.model_selection import cross_val_score
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train[:,0], cv = 10)
+accuracies.mean()
+accuracies.std()
+
+# Applying Grid Search to find the best model and the best parameters
+from sklearn.model_selection import GridSearchCV
+parameters = [{'C': [1, 10, 100, 1000], 'kernel': ['linear']},
+              {'C': [1, 10, 100, 1000], 'kernel': ['rbf'], 'gamma': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}]
+grid_search = GridSearchCV(estimator = classifier,
+                           param_grid = parameters,
+                           scoring = 'accuracy',
+                           cv = 10,
+                           n_jobs = -1)
+grid_search = grid_search.fit(X_train, y_train[:,0])
+best_accuracy = grid_search.best_score_
+best_parameters = grid_search.best_params_
