@@ -36,15 +36,15 @@ X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
 
-# Fitting Kernel SVM to the Training set
-from sklearn.svm import SVC
-classifier = SVC(kernel = 'rbf', random_state = 0)
-classifier.fit(X_train, y_train[:,0])
-
-# # Fitting K-NN to the Training set
-# from sklearn.neighbors import KNeighborsClassifier
-# classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+# # Fitting Kernel SVM to the Training set
+# from sklearn.svm import SVC
+# classifier = SVC(kernel = 'rbf', random_state = 0)
 # classifier.fit(X_train, y_train[:,0])
+
+# Fitting K-NN to the Training set
+from sklearn.neighbors import KNeighborsClassifier
+classifier = KNeighborsClassifier(n_neighbors = 6, metric = 'minkowski', p = 1)
+classifier.fit(X_train, y_train[:,0])
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
@@ -68,8 +68,8 @@ accuracies.std()
 
 # Applying Grid Search to find the best model and the best parameters
 from sklearn.model_selection import GridSearchCV
-parameters = [{'C': [1, 10, 100, 1000], 'kernel': ['linear']},
-              {'C': [1, 10, 100, 1000], 'kernel': ['rbf'], 'gamma': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}]
+parameters = [{'n_neighbors': [4, 5, 6, 10],'metric': ['minkowski'], 'p':[1,2]}
+              ]
 grid_search = GridSearchCV(estimator = classifier,
                            param_grid = parameters,
                            scoring = 'accuracy',
